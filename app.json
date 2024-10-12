@@ -6,11 +6,11 @@
   "env": {
     "CONFIG_BASE64": {
       "description": "Base64-encoded rclone config",
-      "required": true
+      "required": false
     },
     "CONFIG_URL": {
       "description": "URL to fetch the rclone config",
-      "required": false
+      "required": true
     },
     "USERNAME": {
       "description": "Username for authentication",
