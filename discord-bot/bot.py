@@ -1,13 +1,14 @@
 import discord
 from discord.ext import commands
-from commands import navigation, system, rclone, upload, share, backup, watch, stats, health_check, user_management, logging, notify, search, sync, status
+from commands import navigation, system, rclone, upload, share, backup, watch, stats, health_check, user_management, logging, notify, search, sync
+from commands.status.status_tracking_part1 import Status
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.reactions = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-bot.add_cog(status.Status(bot))
+bot.add_cog(Status(bot))
 bot.add_cog(navigation.Navigation(bot))
 bot.add_cog(system.System(bot))
 bot.add_cog(rclone.Rclone(bot))
