@@ -1,9 +1,5 @@
-#!/bin/sh
-
-set -e
-
-echo "Checking for rclone executable..."
-if command -v rclone &> /dev/null; then
+if command -v rclone &> /dev/null
+then
     echo "Rclone executable found (global)"
     RCLONE_COMMAND="rclone"
 else
@@ -20,7 +16,6 @@ else
     fi
 fi
 
-echo "Checking for PORT env var..."
 if [ -z "${PORT}" ]; then
     echo "No PORT env var, using 8080 port"
     PORT=8080
@@ -28,9 +23,9 @@ else
     echo "PORT env var found, using $PORT port"
 fi
 
-echo "Checking for Rclone config..."
 if [ -n "${CONFIG_BASE64}" ] || [ -n "${CONFIG_URL}" ]; then
     echo "Rclone config found"
+
     if [ -n "${CONFIG_BASE64}" ]; then
         echo "${CONFIG_BASE64}" | base64 -d > rclone.conf
         echo "Base64-encoded config is used"
@@ -38,20 +33,22 @@ if [ -n "${CONFIG_BASE64}" ] || [ -n "${CONFIG_URL}" ]; then
         curl "$CONFIG_URL" > rclone.conf
         echo "Gist link config is used"
     fi
-
+    
     contents=$(cat rclone.conf)
-    echo "Contents of rclone.conf:"
-    echo "$contents"
+
     if ! echo "$contents" | grep -q "\[combine\]"; then
         remotes=$(echo "$contents" | grep '^\[' | sed 's/\[\(.*\)\]/\1/g')
+
         upstreams=""
         for remote in $remotes; do
-            upstreams="${upstreams}${remote}=${remote}:"
+            upstreams+="$remote=$remote: "
         done
-        upstreams=$(echo $upstreams | sed 's/:$//')
-        echo "Upstreams set to: $upstreams"
+
+        upstreams=${upstreams::-1}
+
         echo -e "\n\n[combine]\ntype = combine\nupstreams = $upstreams" >> rclone.conf
     fi
+
 else
     echo "No Rclone config URL found, serving blank config"
     touch rclone.conf
@@ -63,7 +60,6 @@ if [ -n "${USERNAME}" ] && [ -n "${PASSWORD}" ]; then
     CMD="${CMD} --user=\"$USERNAME\" --pass=\"$PASSWORD\""
     echo "Authentication is set"
 fi
-
 if [ "${DARK_MODE,,}" = "true" ]; then
     CMD="${CMD} --template=templates/dark.html"
     echo "Template is set to dark"
@@ -71,5 +67,5 @@ else
     echo "Template is set to light"
 fi
 
-echo "Running rclone index with command: $CMD"
+echo "Running rclone index"
 eval $CMD
