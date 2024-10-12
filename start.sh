@@ -39,9 +39,9 @@ if [ -n "${CONFIG_BASE64}" ] || [ -n "${CONFIG_URL}" ]; then
         remotes=$(echo "$contents" | grep '^\[' | sed 's/\[\(.*\)\]/\1/g')
         upstreams=""
         for remote in $remotes; do
-            upstreams+="${remote}=${remote}: "
+            upstreams="${upstreams}${remote}=${remote}: "
         done
-        upstreams=${upstreams% }
+        upstreams=${upstreams%?}
         echo -e "\n\n[combine]\ntype = combine\nupstreams = $upstreams" >> rclone.conf
     fi
 else
