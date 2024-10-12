@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-  rclone-index:
-    build: ./rclone-index
+  combined-service:
+    build: .
     ports:
       - "8080:8080"
     environment:
@@ -10,8 +10,5 @@ services:
       - USERNAME=${USERNAME}
       - PASSWORD=${PASSWORD}
       - DARK_MODE=${DARK_MODE}
-  discord-bot:
-    build: ./discord-bot
-    environment:
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
       - WEBHOOK_URL=${WEBHOOK_URL}
