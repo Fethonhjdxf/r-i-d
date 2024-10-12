@@ -19,8 +19,8 @@ RUN apt-get update && \
     pip install --no-cache-dir -r /app/rclone-index/requirements.txt && \
     pip install --no-cache-dir -r /app/discord-bot/requirements.txt
 
-# Make start_combined.sh executable
-RUN chmod +x /app/start_combined.sh
+# Make start_combined.sh and start.sh executable
+RUN chmod +x /app/start_combined.sh /app/rclone-index/start.sh
 
 # Start rclone-index and discord-bot
 CMD ["sh", "/app/start_combined.sh"]
