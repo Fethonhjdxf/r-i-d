@@ -1,3 +1,4 @@
+import os
 import discord
 from discord.ext import commands
 import subprocess
@@ -5,7 +6,7 @@ import requests
 
 navigation_sessions = {}
 
-WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL"
+WEBHOOK_URL = os.getenv('WEBHOOK_URL')
 
 class Navigation(commands.Cog):
     def __init__(self, bot):
