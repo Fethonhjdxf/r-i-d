@@ -14,3 +14,4 @@ services:
     build: ./discord-bot
     environment:
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - WEBHOOK_URL=${WEBHOOK_URL}
