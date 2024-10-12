@@ -1,0 +1,33 @@
+{
+  "name": "rclone-index-discord",
+  "description": "A combined rclone index and Discord bot project",
+  "repository": "https://github.com/yourusername/rclone-index-discord",
+  "keywords": ["rclone", "index", "discord", "bot", "service"],
+  "env": {
+    "CONFIG_BASE64": {
+      "description": "Base64-encoded rclone config",
+      "required": true
+    },
+    "CONFIG_URL": {
+      "description": "URL to fetch the rclone config",
+      "required": false
+    },
+    "USERNAME": {
+      "description": "Username for authentication",
+      "required": true
+    },
+    "PASSWORD": {
+      "description": "Password for authentication",
+      "required": true
+    },
+    "DARK_MODE": {
+      "description": "Enable dark mode",
+      "required": false
+    },
+    "DISCORD_BOT_TOKEN": {
+      "description": "The token for your Discord bot",
+      "required": true
+    }
+  },
+  "addons": []
+}
