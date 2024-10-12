@@ -4,15 +4,17 @@ FROM python:3.8-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy the rclone-index directory
+COPY rclone-index /app/rclone-index
+
+# Copy the discord-bot directory
+COPY discord-bot /app/discord-bot
 
 # Install rclone, curl, bash, and unzip
 RUN apt-get update && \
-    apt-get install -y rclone curl bash unzip
+    apt-get install -y rclone curl bash unzip && \
+    pip install --no-cache-dir -r /app/rclone-index/requirements.txt && \
+    pip install --no-cache-dir -r /app/discord-bot/requirements.txt
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Run start.sh when the container launches
-CMD ["sh", "start.sh"]
+# Start rclone-index and discord-bot
+CMD ["sh", "/app/start_combined.sh"]
