@@ -1,5 +1,8 @@
 #!/bin/sh
 
+set -e
+
+echo "Checking for rclone executable..."
 if command -v rclone &> /dev/null; then
     echo "Rclone executable found (global)"
     RCLONE_COMMAND="rclone"
@@ -17,6 +20,7 @@ else
     fi
 fi
 
+echo "Checking for PORT env var..."
 if [ -z "${PORT}" ]; then
     echo "No PORT env var, using 8080 port"
     PORT=8080
@@ -24,6 +28,7 @@ else
     echo "PORT env var found, using $PORT port"
 fi
 
+echo "Checking for Rclone config..."
 if [ -n "${CONFIG_BASE64}" ] || [ -n "${CONFIG_URL}" ]; then
     echo "Rclone config found"
     if [ -n "${CONFIG_BASE64}" ]; then
@@ -35,13 +40,16 @@ if [ -n "${CONFIG_BASE64}" ] || [ -n "${CONFIG_URL}" ]; then
     fi
 
     contents=$(cat rclone.conf)
+    echo "Contents of rclone.conf:"
+    echo "$contents"
     if ! echo "$contents" | grep -q "\[combine\]"; then
         remotes=$(echo "$contents" | grep '^\[' | sed 's/\[\(.*\)\]/\1/g')
         upstreams=""
         for remote in $remotes; do
             upstreams="${upstreams}${remote}=${remote}:"
         done
-        upstreams=$(echo $upstreams | sed 's/.$//')
+        upstreams=$(echo $upstreams | sed 's/:$//')
+        echo "Upstreams set to: $upstreams"
         echo -e "\n\n[combine]\ntype = combine\nupstreams = $upstreams" >> rclone.conf
     fi
 else
@@ -63,5 +71,5 @@ else
     echo "Template is set to light"
 fi
 
-echo "Running rclone index"
+echo "Running rclone index with command: $CMD"
 eval $CMD
