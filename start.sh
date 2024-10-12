@@ -1,5 +1,6 @@
-if command -v rclone &> /dev/null
-then
+#!/bin/sh
+
+if command -v rclone &> /dev/null; then
     echo "Rclone executable found (global)"
     RCLONE_COMMAND="rclone"
 else
@@ -25,7 +26,6 @@ fi
 
 if [ -n "${CONFIG_BASE64}" ] || [ -n "${CONFIG_URL}" ]; then
     echo "Rclone config found"
-
     if [ -n "${CONFIG_BASE64}" ]; then
         echo "${CONFIG_BASE64}" | base64 -d > rclone.conf
         echo "Base64-encoded config is used"
@@ -33,22 +33,17 @@ if [ -n "${CONFIG_BASE64}" ] || [ -n "${CONFIG_URL}" ]; then
         curl "$CONFIG_URL" > rclone.conf
         echo "Gist link config is used"
     fi
-    
-    contents=$(cat rclone.conf)
 
+    contents=$(cat rclone.conf)
     if ! echo "$contents" | grep -q "\[combine\]"; then
         remotes=$(echo "$contents" | grep '^\[' | sed 's/\[\(.*\)\]/\1/g')
-
         upstreams=""
         for remote in $remotes; do
-            upstreams+="$remote=$remote: "
+            upstreams+="${remote}=${remote}: "
         done
-
-        upstreams=${upstreams::-1}
-
+        upstreams=${upstreams% }
         echo -e "\n\n[combine]\ntype = combine\nupstreams = $upstreams" >> rclone.conf
     fi
-
 else
     echo "No Rclone config URL found, serving blank config"
     touch rclone.conf
@@ -60,6 +55,7 @@ if [ -n "${USERNAME}" ] && [ -n "${PASSWORD}" ]; then
     CMD="${CMD} --user=\"$USERNAME\" --pass=\"$PASSWORD\""
     echo "Authentication is set"
 fi
+
 if [ "${DARK_MODE,,}" = "true" ]; then
     CMD="${CMD} --template=templates/dark.html"
     echo "Template is set to dark"
